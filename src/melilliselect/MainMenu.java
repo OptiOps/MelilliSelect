@@ -5,10 +5,22 @@
 package melilliselect;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -19,16 +31,42 @@ public class MainMenu extends javax.swing.JFrame {
     /**
      * Creates new form MainMenu
      */
+    public static  Dashboard dashboard;
+    public static Dimension screenDimension;
     public MainMenu() {
         setUndecorated(true);
         initComponents();
-
+        try {
+            InputStream s =  getClass().getResourceAsStream("/melilliselect/resources/Inter.ttf");
+            System.out.println(s);
+           Font font =  Font.createFont(Font.TRUETYPE_FONT, s);
+           StaticData.font12 = font.deriveFont(Font.BOLD, 12f);
+           StaticData.font10 = font.deriveFont(Font.PLAIN, 10f);
+           StaticData.font13 = font.deriveFont(Font.BOLD, 13f);
+           StaticData.font15 = font.deriveFont(Font.BOLD, 15f);
+            StaticData.font8 = font.deriveFont(Font.PLAIN, 8f);
+        } catch (FontFormatException ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    setSize(1000, 800);
+        screenDimension = getSize();
         add(new SideNav(), BorderLayout.LINE_START);
-        add(new Dashboard(), BorderLayout.CENTER);
-        setSize(1000, 800);
+        dashboard = new Dashboard();
+        add(dashboard, BorderLayout.CENTER);
+        
         setLocationRelativeTo(null);
         setOnClickListeners();
         setVisible(true);
+        
+        addComponentListener(new ComponentAdapter() 
+        {  
+                public void componentResized(ComponentEvent evt) {
+                    Component c = (Component)evt.getSource();
+                    screenDimension = c.getSize();
+                }
+        });
     }
 
 
@@ -48,6 +86,7 @@ public class MainMenu extends javax.swing.JFrame {
     private void maximizeButtonClick(ActionEvent evt) {
         if (getExtendedState() == NORMAL) {
             setExtendedState(MAXIMIZED_BOTH);
+            
         } else {
             setExtendedState(NORMAL);
         }

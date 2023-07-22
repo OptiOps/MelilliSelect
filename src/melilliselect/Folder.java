@@ -4,7 +4,7 @@
  */
 package melilliselect;
 
-import java.awt.Graphics;
+import melilliselect.Models.FolderModel;
 
 /**
  *
@@ -15,8 +15,26 @@ public class Folder extends javax.swing.JPanel {
     /**
      * Creates new form File
      */
+    FileExplorer fe;
+    FolderModel fm ; 
     public Folder() {
         initComponents();
+    }
+    public Folder(FolderModel folder,FileExplorer fe) {
+            initComponents();
+            this.fe = fe;
+            this.fm = folder;
+            folderName.setText(folder.getName());
+            totalElements.setText(folder.getTotalFiles()+" elementi");
+            if(folder.getSelectedFiles()<=0){
+                selectedItems.setVisible(false);
+            }
+            else{
+                selectedItems.setText(folder.getSelectedFiles()+" selezionate");
+            }
+            
+            
+            
     }
    
 
@@ -32,15 +50,26 @@ public class Folder extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        folderName = new javax.swing.JLabel();
+        totalElements = new javax.swing.JLabel();
+        selectedItems = new javax.swing.JLabel();
 
         setBackground(StaticData.dashboardBackground);
         setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         setMaximumSize(new java.awt.Dimension(137, 150));
         setMinimumSize(new java.awt.Dimension(137, 110));
         setPreferredSize(new java.awt.Dimension(137, 150));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                formMouseExited(evt);
+            }
+        });
 
         jPanel1.setBackground(StaticData.dashboardBackground
         );
@@ -65,37 +94,37 @@ public class Folder extends javax.swing.JPanel {
 
         jPanel2.setBackground(StaticData.dashboardBackground);
 
-        jLabel2.setFont(StaticData.font12);
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Esterni");
+        folderName.setFont(StaticData.font12);
+        folderName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        folderName.setText("Esterni");
 
-        jLabel3.setFont(new java.awt.Font("Liberation Sans", 0, 10)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(103, 103, 103));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("144 elementi");
+        totalElements.setFont(StaticData.font10);
+        totalElements.setForeground(new java.awt.Color(103, 103, 103));
+        totalElements.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalElements.setText("144 elementi");
 
-        jLabel4.setFont(new java.awt.Font("Liberation Sans", 0, 10)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(83, 205, 95));
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("4 selezionate");
+        selectedItems.setFont(StaticData.font10);
+        selectedItems.setForeground(new java.awt.Color(83, 205, 95));
+        selectedItems.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        selectedItems.setText("4 selezionate");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(folderName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(totalElements, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(selectedItems, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
+                .addComponent(folderName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addComponent(totalElements)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4)
+                .addComponent(selectedItems)
                 .addContainerGap())
         );
 
@@ -115,13 +144,35 @@ public class Folder extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        // TODO add your handling code here:
+        setBackground(StaticData.bgSelectedColor);
+        jPanel1.setBackground(StaticData.bgSelectedColor);
+        jPanel2.setBackground(StaticData.bgSelectedColor);
+        
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
+        // TODO add your handling code here:
+        setBackground(StaticData.dashboardBackground);
+        jPanel1.setBackground(StaticData.dashboardBackground);
+        jPanel2.setBackground(StaticData.dashboardBackground);
+        
+    }//GEN-LAST:event_formMouseExited
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+       this.fe.changeWorkingDirectory(fm.getDirectory());
+        
+    }//GEN-LAST:event_formMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel folderName;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel selectedItems;
+    private javax.swing.JLabel totalElements;
     // End of variables declaration//GEN-END:variables
 }

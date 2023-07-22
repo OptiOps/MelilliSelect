@@ -7,6 +7,7 @@ package melilliselect;
 import java.awt.Font;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.awt.Frame.NORMAL;
+import java.awt.Graphics;
 
 /**
  *
@@ -143,7 +144,7 @@ public class TopNav extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_forwardButtonActionPerformed
 
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JButton closeButton;

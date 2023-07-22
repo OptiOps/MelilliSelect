@@ -55,7 +55,7 @@ public class SideNav extends javax.swing.JPanel {
         jPanel3.setBackground(StaticData.blueBackground);
 
         jLabel5.setBackground(StaticData.blueBackground);
-        jLabel5.setFont(new Font("Inter", Font.BOLD, 13));
+        jLabel5.setFont(StaticData.font12);
         jLabel5.setForeground(new java.awt.Color(56, 83, 124));
         jLabel5.setText("Version 1.0");
         jLabel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 30, 1, 1));
@@ -104,7 +104,7 @@ public class SideNav extends javax.swing.JPanel {
         jPanel4.setBackground(StaticData.blueBackground);
 
         jButton1.setBackground(StaticData.blueBackground);
-        jButton1.setFont(new Font("Inter", Font.BOLD, 13));
+        jButton1.setFont(StaticData.font13);
         jButton1.setForeground(StaticData.textWhiteColor);
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/SendIcon.png"))); // NOI18N
         jButton1.setText("Foto");
@@ -138,7 +138,7 @@ public class SideNav extends javax.swing.JPanel {
         jPanel5.setBackground(StaticData.blueBackground);
 
         jButton2.setBackground(StaticData.blueBackground);
-        jButton2.setFont(new Font("Inter", Font.BOLD, 13));
+        jButton2.setFont(StaticData.font13);
         jButton2.setForeground(StaticData.textWhiteColor);
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/HeartIcon.png"))); // NOI18N
         jButton2.setText("Selezione");
@@ -172,7 +172,7 @@ public class SideNav extends javax.swing.JPanel {
         jPanel6.setBackground(StaticData.blueBackground);
 
         jButton3.setBackground(StaticData.blueBackground);
-        jButton3.setFont(new Font("Inter", Font.BOLD, 13));
+        jButton3.setFont(StaticData.font13);
         jButton3.setForeground(StaticData.textWhiteColor);
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/ReloadIcon.png"))); // NOI18N
         jButton3.setText("Storia");
@@ -206,7 +206,7 @@ public class SideNav extends javax.swing.JPanel {
         jPanel7.setBackground(StaticData.blueBackground);
 
         jButton4.setBackground(StaticData.blueBackground);
-        jButton4.setFont(new Font("Inter", Font.BOLD, 13));
+        jButton4.setFont(StaticData.font13);
         jButton4.setForeground(StaticData.textWhiteColor);
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/SendIconSelected.png"))); // NOI18N
         jButton4.setText("Invia");
@@ -240,14 +240,14 @@ public class SideNav extends javax.swing.JPanel {
         jPanel8.setBackground(StaticData.blueBackground);
 
         jLabel3.setBackground(StaticData.blueBackground);
-        jLabel3.setFont(new Font("Inter", Font.BOLD, 13));
+        jLabel3.setFont(StaticData.font13);
         jLabel3.setForeground(StaticData.textWhiteColor);
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/HeartRed.png"))); // NOI18N
         jLabel3.setText("Scelte: 4/120");
         jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 30, 1, 1));
 
         jLabel4.setBackground(StaticData.blueBackground);
-        jLabel4.setFont(new Font("Inter", Font.BOLD, 13));
+        jLabel4.setFont(StaticData.font13);
         jLabel4.setForeground(StaticData.textWhiteColor);
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/Diamond.png"))); // NOI18N
         jLabel4.setText("Dettagli: 2");
@@ -273,11 +273,10 @@ public class SideNav extends javax.swing.JPanel {
         jPanel9.setBackground(StaticData.blueBackground);
 
         jButton5.setBackground(StaticData.blueBackground);
-        jButton5.setFont(new Font("Inter", Font.BOLD, 13));
+        jButton5.setFont(StaticData.font13);
         jButton5.setForeground(StaticData.textWhiteColor);
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/Settings.png"))); // NOI18N
         jButton5.setText("Impostazioni");
-        jButton5.setActionCommand("Impostazioni");
         jButton5.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 30, 1, 1));
         jButton5.setFocusPainted(false);
         jButton5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -339,6 +338,7 @@ public class SideNav extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        MainMenu.dashboard.dashboardChange(new FileExplorer());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -351,6 +351,7 @@ public class SideNav extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        MainMenu.dashboard.dashboardChange(new Upload());
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

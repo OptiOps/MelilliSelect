@@ -5,6 +5,7 @@
 package melilliselect;
 
 import java.awt.BorderLayout;
+import javax.swing.JPanel;
 
 /**
  *
@@ -15,13 +16,25 @@ public class Dashboard extends javax.swing.JPanel {
     /**
      * Creates new form Dashboard
      */
+    JPanel dashboard ;
     public Dashboard() {
     
         initComponents();
 //        setVisible(true);
         add(new TopNav(), BorderLayout.PAGE_START);
-        add(new FileExplorer(),BorderLayout.CENTER);
+        dashboard = new FileExplorer();
+        add(dashboard,BorderLayout.CENTER);
     
+    }
+    public void dashboardChange(JPanel jPanel){
+        remove(dashboard);
+        removeNotify();
+        
+        dashboard = jPanel;
+        add(jPanel,BorderLayout.CENTER);
+        addNotify();
+        revalidate();
+        repaint();
     }
 
     /**
@@ -33,29 +46,11 @@ public class Dashboard extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-
         setBackground(new java.awt.Color(242, 241, 240));
         setLayout(new java.awt.BorderLayout());
-
-        jPanel1.setBackground(new java.awt.Color(242, 241, 240));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 678, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 337, Short.MAX_VALUE)
-        );
-
-        add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

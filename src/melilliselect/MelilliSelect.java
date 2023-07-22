@@ -4,6 +4,8 @@
  */
 package melilliselect;
 
+import java.awt.Font;
+
 /**
  *
  * @author arsam
@@ -15,6 +17,8 @@ public class MelilliSelect {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+      
+    //register the font
         new MainMenu().setVisible(true);
     }
     

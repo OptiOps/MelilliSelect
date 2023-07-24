@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import static melilliselect.workers.ImageLoaderWorker.getBufferedImage;
 
 /**
  *
@@ -157,12 +158,12 @@ public class ImageLabel extends javax.swing.JPanel {
         File cr2File = new File(this.path);
         BufferedImage image;
         try {
-            image = ImageIO.read(cr2File);
+            
+            image = getBufferedImage(this.path);
+//            image = ImageIO.read(cr2File);
         } catch (IOException ex) {
-            Logger.getLogger(ImageLabel.class.getName()).log(Level.SEVERE, null, ex);
             image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         }
-        
         
         int newWidth = MainMenu.screenDimension.width - StaticData.sideNavWidth -50;
         int newHeight = MainMenu.screenDimension.height - 90 -50;

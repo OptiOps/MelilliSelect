@@ -85,7 +85,8 @@ public class FileExplorer extends javax.swing.JPanel {
         try {
             connection = file.toURL().openConnection();
             String mimeType = connection.getContentType();
-            if (mimeType.contains("image")) {
+            
+            if (mimeType.contains("image")|| file.getName().contains(".CR3")) {
                 return true;
             }
         } catch (IOException ex) {
@@ -123,10 +124,8 @@ public class FileExplorer extends javax.swing.JPanel {
             } else {
                 ImageLabel jl;
                 ImageFileModel ifm = imageFiles.get(i - folders.size());
-                System.out.println(ifm.getPath());
                 if (ifm.getBufferedImage() != null) {
                     jl = new ImageLabel(ifm.getBufferedImage(), ifm.getName(), ifm.getPath());
-
                 } else {
                     jl = new ImageLabel(ifm.getName(), ifm.getPath());
                 }

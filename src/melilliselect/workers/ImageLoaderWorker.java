@@ -8,11 +8,6 @@ package melilliselect.workers;
  *
  * @author arsam
  */
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
-import com.drew.metadata.exif.ExifThumbnailDirectory;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Transparency;
@@ -31,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,21 +40,20 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import melilliselect.FileExplorer;
+import melilliselect.Models.ImageEncryptionDecryption;
 import melilliselect.Models.ImageFileModel;
 
 public class ImageLoaderWorker extends SwingWorker<Void, ImageFileModel> {
 
     ArrayList<ImageFileModel> imageFiles;
-    FileExplorer fe;
     int counter = 0;
     private GroupLayout groupLayout;
     private GroupLayout.SequentialGroup sg;
     private GroupLayout.ParallelGroup pg;
     JPanel j1;
 
-    public ImageLoaderWorker(ArrayList<ImageFileModel> imageFiles, FileExplorer fe) {
+    public ImageLoaderWorker(ArrayList<ImageFileModel> imageFiles) {
         this.imageFiles = imageFiles;
-        this.fe = fe;
     }
 
     @Override
@@ -97,7 +92,7 @@ public class ImageLoaderWorker extends SwingWorker<Void, ImageFileModel> {
 
     }
 
-    public static byte[] findThumbnailData(String filePath) {
+    public static byte[] findThumbnailData(byte[] data) {
         byte[] thumbnailData = new byte[0];
         byte[] cnthTag = {
             (byte) 0xEA, (byte) 0xF4, (byte) 0x2B, (byte) 0x5E,
@@ -106,56 +101,61 @@ public class ImageLoaderWorker extends SwingWorker<Void, ImageFileModel> {
             (byte) 0x40, (byte) 0x6E, (byte) 0x4D, (byte) 0x16
         };
 
-        try (FileInputStream fis = new FileInputStream(new File(filePath))) {
-            byte[] buffer = fis.readAllBytes();
-            for (int i = 0; i < buffer.length - cnthTag.length; i++) {
-                boolean tagFound = true;
-                for (int j = 0; j < cnthTag.length; j++) {
-                    if (buffer[i + j] != cnthTag[j]) {
-                        tagFound = false;
-                        break;
-                    }
-                }
-
-                if (tagFound) {
-                    int thumbnailStart = i + 16;
-                    int thumbnailEnd = thumbnailStart + 16 + 8 + 20;
-                    thumbnailData = new byte[thumbnailEnd - thumbnailStart];
-                    System.arraycopy(buffer, thumbnailStart, thumbnailData, 0, thumbnailData.length);
+        byte[] buffer = data;
+        for (int i = 0; i < buffer.length - cnthTag.length; i++) {
+            boolean tagFound = true;
+            for (int j = 0; j < cnthTag.length; j++) {
+                if (buffer[i + j] != cnthTag[j]) {
+                    tagFound = false;
                     break;
                 }
             }
 
-            // Additional code to search for JPEG start and end markers after thumbnail_data
-            byte[] jpegStartMarker = {(byte) 0xFF, (byte) 0xD8};
-            byte[] jpegEndMarker = {(byte) 0xFF, (byte) 0xD9};
-            int startOffset = indexOf(buffer, jpegStartMarker, thumbnailData.length);
-            int endOffset = indexOf(buffer, jpegEndMarker, startOffset + jpegStartMarker.length);
-
-            if (startOffset != -1 && endOffset != -1) {
-                int jpegDataLength = endOffset - startOffset + jpegEndMarker.length;
-                byte[] jpegData = new byte[jpegDataLength];
-                System.arraycopy(buffer, startOffset, jpegData, 0, jpegDataLength);
-                return jpegData;
-            } else {
-                return null;
+            if (tagFound) {
+                int thumbnailStart = i + 16;
+                int thumbnailEnd = thumbnailStart + 16 + 8 + 20;
+                thumbnailData = new byte[thumbnailEnd - thumbnailStart];
+                System.arraycopy(buffer, thumbnailStart, thumbnailData, 0, thumbnailData.length);
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+
+        // Additional code to search for JPEG start and end markers after thumbnail_data
+        byte[] jpegStartMarker = {(byte) 0xFF, (byte) 0xD8};
+        byte[] jpegEndMarker = {(byte) 0xFF, (byte) 0xD9};
+        int startOffset = indexOf(buffer, jpegStartMarker, thumbnailData.length);
+        int endOffset = indexOf(buffer, jpegEndMarker, startOffset + jpegStartMarker.length);
+
+        if (startOffset != -1 && endOffset != -1) {
+            int jpegDataLength = endOffset - startOffset + jpegEndMarker.length;
+            byte[] jpegData = new byte[jpegDataLength];
+            System.arraycopy(buffer, startOffset, jpegData, 0, jpegDataLength);
+            return jpegData;
+        } else {
             return null;
         }
+
     }
 
     public static BufferedImage getBufferedImage(String path) throws IOException {
         File cr2File = new File(path);
-        BufferedImage image = ImageIO.read(cr2File);
-        if (image == null) {
-            byte[] ia = findThumbnailData(cr2File.getPath());
-            ByteArrayInputStream bis = new ByteArrayInputStream(ia);
-            image = ImageIO.read(bis);
+        byte[] fileData;
+        try {
+            fileData = ImageEncryptionDecryption.decryptImage("arsam", cr2File);
 
+            InputStream inputStream = new ByteArrayInputStream(fileData);
+            BufferedImage image = ImageIO.read(inputStream);
+            if (image == null) {
+                byte[] ia = findThumbnailData(fileData);
+                ByteArrayInputStream bis = new ByteArrayInputStream(ia);
+                image = ImageIO.read(bis);
+
+            }
+            return image;
+        } catch (Exception ex) {
+            Logger.getLogger(ImageLoaderWorker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return image;
+        return new BufferedImage(100, 100, BufferedImage.TYPE_4BYTE_ABGR);
     }
 
     private static int indexOf(byte[] array, byte[] subArray, int startIndex) {

@@ -22,6 +22,7 @@ import javax.swing.JScrollBar;
 
 import melilliselect.Models.FolderModel;
 import melilliselect.Models.ImageFileModel;
+import melilliselect.Models.ImageLikeModel;
 import melilliselect.workers.ImageLoaderWorker;
 
 /**
@@ -33,8 +34,7 @@ public class FileExplorer extends javax.swing.JPanel {
     /**
      * Creates new form FileExplorer
      */
-    private int padding = 15;
-    private int currentIndex = 0;
+    private final int padding = 15;
     ArrayList<FolderModel> folders;
     ArrayList<ImageFileModel> imageFiles;
     private String currentDirectory = "";
@@ -52,28 +52,33 @@ public class FileExplorer extends javax.swing.JPanel {
         horizontalScrollBar.setBackground(Color.WHITE);
         getCurrentDirectoryFolders();
         initFolders();
-        ImageLoaderWorker lg = new ImageLoaderWorker(imageFiles, this);
+        ImageLoaderWorker lg = new ImageLoaderWorker(imageFiles);
         lg.execute();
 
     }
 
     private void getCurrentDirectoryFolders() {
-        folders = new ArrayList<FolderModel>();
-        imageFiles = new ArrayList<ImageFileModel>();
-        String currentDirectory = System.getProperty("user.dir");
-        if(this.currentDirectory!=""){
-            currentDirectory = this.currentDirectory;
+        folders = new ArrayList<>();
+        imageFiles = new ArrayList<>();
+        String currentDLocal = StaticData.currentWorkingDirectory;
+        if (!"".equals(this.currentDirectory)) {
+            currentDLocal = this.currentDirectory;
         }
-        File directory = new File(currentDirectory);
+        File directory = new File(currentDLocal);
         File[] files = directory.listFiles();
 
         if (files != null) {
             for (File file : files) {
-                if (file.isDirectory()) {
-                    folders.add(new FolderModel(file.getName(), file.getPath(), file.list().length, 0));
-                }
-                else if(checkImage(file)==true){
-                    imageFiles.add(new ImageFileModel(file.getName(), file.getPath()));
+                boolean showSelected = !file.getPath().equals(StaticData.destinationFolderPath);
+                if (file.isDirectory() && showSelected) {
+                    int selectedFiles = StaticData.fileManager.getDirectorySelectedItems(file.getPath());
+                    folders.add(new FolderModel(file.getName(), file.getPath(), file.list().length, selectedFiles));
+                } else if (checkImage(file) == true) {
+                    ImageLikeModel ilm = StaticData.fileManager.getImageFile(file.getPath(), file.getName());
+                    ImageFileModel ifm = new ImageFileModel(ilm.getName(), ilm.getPath());
+                    ifm.setIsDiamond(ilm.isIsDiamond());
+                    ifm.setIsHeart(ilm.isIsHeart());
+                    imageFiles.add(ifm);
                 }
 
             }
@@ -85,8 +90,8 @@ public class FileExplorer extends javax.swing.JPanel {
         try {
             connection = file.toURL().openConnection();
             String mimeType = connection.getContentType();
-            
-            if (mimeType.contains("image")|| file.getName().contains(".CR3")) {
+
+            if (mimeType.contains("image") || file.getName().contains(".CR3")) {
                 return true;
             }
         } catch (IOException ex) {
@@ -94,23 +99,22 @@ public class FileExplorer extends javax.swing.JPanel {
         }
         return false;
     }
-    
-    public void changeWorkingDirectory(String path){
-        if(new File(path).exists()){
+
+    public void changeWorkingDirectory(String path) {
+        if (new File(path).exists()) {
             this.currentDirectory = path;
             getCurrentDirectoryFolders();
-            ImageLoaderWorker lg = new ImageLoaderWorker(imageFiles, this);
+            ImageLoaderWorker lg = new ImageLoaderWorker(imageFiles);
             lg.execute();
             revalidate();
             repaint();
         }
-        
+
     }
 
     private void initFolders() {
         JPanel j1 = getNewJPanel();
         int maxColumns = getMaxColumns();
-        int a = (int) Math.ceil((double) (maxColumns * padding) / (StaticData.folderWidth));
         GroupLayout groupLayout = setRootPanelLayout();
         SequentialGroup sg = groupLayout.createSequentialGroup();
         ParallelGroup pg = groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING);
@@ -120,15 +124,11 @@ public class FileExplorer extends javax.swing.JPanel {
                 j1 = getNewJPanel();
             }
             if (i < folders.size()) {
-                j1.add(new Folder(folders.get(i),this));
+                j1.add(new Folder(folders.get(i), this));
             } else {
                 ImageLabel jl;
                 ImageFileModel ifm = imageFiles.get(i - folders.size());
-                if (ifm.getBufferedImage() != null) {
-                    jl = new ImageLabel(ifm.getBufferedImage(), ifm.getName(), ifm.getPath());
-                } else {
-                    jl = new ImageLabel(ifm.getName(), ifm.getPath());
-                }
+                jl = new ImageLabel(ifm);
                 ifm.setImageLabel(jl);
                 j1.add(jl);
             }

@@ -1,0 +1,200 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
+package melilliselect;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+
+import melilliselect.Models.FolderModel;
+import melilliselect.Models.ImageFileModel;
+import melilliselect.Models.ImageLikeModel;
+import melilliselect.workers.ImageLoaderWorker;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
+
+/**
+ *
+ * @author arsam
+ */
+public class LikeFiles extends javax.swing.JPanel {
+
+    /**
+     * Creates new form FileExplorer
+     */
+    private int padding = 15;
+    ArrayList<ImageFileModel> imageFiles;
+
+    public LikeFiles() {
+        initComponents();
+        JScrollBar verticalScrollBar = scrollpane.getVerticalScrollBar();
+        JScrollBar horizontalScrollBar = scrollpane.getHorizontalScrollBar();
+        scrollpane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
+        verticalScrollBar.setPreferredSize(new Dimension(8, 20));
+        verticalScrollBar.setForeground(new Color(48, 144, 216));
+        verticalScrollBar.setBackground(Color.WHITE);
+        horizontalScrollBar.setPreferredSize(new Dimension(8, 20));
+        horizontalScrollBar.setForeground(new Color(48, 144, 216));
+        horizontalScrollBar.setBackground(Color.WHITE);
+        getCurrentDirectoryFolders();
+        initFolders();
+        ImageLoaderWorker lg = new ImageLoaderWorker(imageFiles);
+        lg.execute();
+
+    }
+
+    private void getCurrentDirectoryFolders() {
+        imageFiles = new ArrayList<ImageFileModel>();
+        Collection<ImageLikeModel> ilms = StaticData.fileManager.getAllFilesSaved();
+        for (ImageLikeModel ilm : ilms) {
+            File fl = new File(ilm.getPath());
+            if (fl.exists()) {
+                ImageFileModel ifm = new ImageFileModel(ilm.getName(), ilm.getPath());
+                ifm.setIsDiamond(ilm.isIsDiamond());
+                ifm.setIsHeart(ilm.isIsHeart());
+                imageFiles.add(ifm);
+            }
+        }
+    }
+
+    private void initFolders() {
+        JPanel j1 = getNewJPanel();
+        int maxColumns = getMaxColumns();
+        int a = (int) Math.ceil((double) (maxColumns * padding) / (StaticData.folderWidth));
+        GroupLayout groupLayout = setRootPanelLayout();
+        SequentialGroup sg = groupLayout.createSequentialGroup();
+        ParallelGroup pg = groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        for (int i = 0; i < imageFiles.size(); i++) {
+            if (i % maxColumns == 0) {
+                j1 = getNewJPanel();
+            }
+            ImageLabel jl;
+            ImageFileModel ifm = imageFiles.get(i);
+            jl = new ImageLabel(ifm);
+            ifm.setImageLabel(jl);
+            j1.add(jl);
+
+            if (i % maxColumns == 0) {
+                setJPanelSGPG(j1, sg, pg);
+            }
+        }
+        setGroupLayouts(groupLayout, sg, pg);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        jPanel1.removeAll();
+        initFolders();
+        super.paint(g); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
+
+    public int getMaxColumns() {
+        Dimension screenSize = MainMenu.screenDimension;
+        int maxWidth = screenSize.width - StaticData.sideNavWidth;
+        int maxColumns = (int) Math.floor((double) (maxWidth) / (StaticData.folderWidth + padding));
+        return maxColumns;
+
+    }
+
+    public GroupLayout setRootPanelLayout() {
+        GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        return jPanel1Layout;
+
+    }
+
+    public JPanel getMainJPanel() {
+        return this.jPanel1;
+    }
+
+    public void setGroupLayouts(GroupLayout groupLayout, SequentialGroup sg, ParallelGroup pg) {
+        groupLayout.setHorizontalGroup(pg);
+        groupLayout.setVerticalGroup(
+                groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(sg));
+    }
+
+    public void setJPanelSGPG(JPanel j1, SequentialGroup sg, ParallelGroup pg) {
+        pg.addComponent(j1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+        sg.addComponent(j1, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
+                .addGap(padding, padding, padding);
+    }
+
+    public JPanel getNewJPanel() {
+        JPanel jpanel = new JPanel();
+        jpanel.setLayout(new FlowLayout(FlowLayout.LEFT, padding, padding));
+        jpanel.setMinimumSize(new Dimension(200, 170));
+        jpanel.setBackground(StaticData.dashboardBackground);
+        return jpanel;
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        scrollpane = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+
+        setBackground(StaticData.dashboardBackground);
+
+        scrollpane.setBackground(StaticData.dashboardBackground);
+        scrollpane.setBorder(null);
+
+        jPanel1.setBackground(StaticData.dashboardBackground);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 249, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 446, Short.MAX_VALUE)
+        );
+
+        scrollpane.setViewportView(jPanel1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(scrollpane)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(scrollpane)
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane scrollpane;
+    // End of variables declaration//GEN-END:variables
+
+}

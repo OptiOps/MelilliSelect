@@ -14,28 +14,35 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
-
+import melilliselect.Models.FileManager;
 
 /**
  *
  * @author arsam
  */
 public class StaticData {
+
     public static int sideNavWidth = 301;
     public static int folderWidth = 150;
     public static Color dashboardBackground = new Color(242, 241, 240);
     public static Color blueBackground = new Color(27, 41, 63);
-    public static Color textWhiteColor = new Color(241,242,243);
+    public static Color textWhiteColor = new Color(241, 242, 243);
     public static Color bgSelectedColor = new Color(231, 229, 229);
-    public static Color pbBGColor= new Color(27, 41, 63);
-    public static Color pbFGColor= new Color(204, 153, 153);
-    public static Font customFont ; 
+    public static Color pbBGColor = new Color(27, 41, 63);
+    public static Color pbFGColor = new Color(204, 153, 153);
+    public static Color fgPinkColor = new Color(204, 153, 153);
+    public static Font customFont;
     public static Font font12;
     public static Font font10;
-     public static Font font13;
-     public static Font font15;
-     public static Font font8;
+    public static Font font13;
+    public static Font font15;
+    public static Font font8;
     public static Border selectedBorder = javax.swing.BorderFactory.createMatteBorder(0, 5, 0, 0, new java.awt.Color(102, 255, 51));
-
+    
+    public static FileManager fileManager = new FileManager();
+    public static String zipFolderName = "/encryptedMelliel";
+    public static String currentWorkingDirectory = System.getProperty("user.dir") + zipFolderName;
+    public static String destinationFolderPath = currentWorkingDirectory + "/melilliselected";
+    public static SideNav sidenav;
 
 }

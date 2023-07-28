@@ -13,12 +13,10 @@ import melilliselect.ImageLabel;
  * @author arsam
  */
 public class ImageFileModel {
-    private String name;
-    private String path;
-    private boolean isHeart;
-    private boolean isDiamond;
+    
     private ImageLabel imageLabel;
     private ImageIcon bufferedImage;
+    private ImageLikeModel ilm;
 
     public ImageIcon getBufferedImage() {
         return bufferedImage;
@@ -37,40 +35,44 @@ public class ImageFileModel {
     }
 
     public ImageFileModel(String name, String path) {
-        this.name = name;
-        this.path = path;
+        this.ilm = new ImageLikeModel(name, path);
+    }
+    
+    public ImageLikeModel getImageLikeModel(){
+        return this.ilm;
     }
 
     public String getName() {
-        return name;
+        return this.ilm.getName();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.ilm.setName(name);
     }
 
     public String getPath() {
-        return path;
+        return this.ilm.getPath();
     }
 
     public void setPath(String path) {
-        this.path = path;
+         this.ilm.setPath(path);
     }
 
     public boolean isIsHeart() {
-        return isHeart;
+         return this.ilm.isIsHeart();
     }
 
     public void setIsHeart(boolean isHeart) {
-        this.isHeart = isHeart;
+        this.ilm.setIsHeart(isHeart);   
     }
 
     public boolean isIsDiamond() {
-        return isDiamond;
+        return this.ilm.isIsDiamond();
+        
     }
 
     public void setIsDiamond(boolean isDiamond) {
-        this.isDiamond = isDiamond;
+       this.ilm.setIsDiamond(isDiamond);   
     }
     
 }

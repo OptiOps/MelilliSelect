@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import melilliselect.Models.FileManager;
 
 /**
  *
@@ -31,44 +32,47 @@ public class MainMenu extends javax.swing.JFrame {
     /**
      * Creates new form MainMenu
      */
-    public static  Dashboard dashboard;
+    public static Dashboard dashboard;
     public static Dimension screenDimension;
+
     public MainMenu() {
         setUndecorated(true);
         initComponents();
         try {
-            InputStream s =  getClass().getResourceAsStream("/melilliselect/resources/Inter.ttf");
+            InputStream s = getClass().getResourceAsStream("/melilliselect/resources/Inter.ttf");
             System.out.println(s);
-           Font font =  Font.createFont(Font.TRUETYPE_FONT, s);
-           StaticData.font12 = font.deriveFont(Font.BOLD, 12f);
-           StaticData.font10 = font.deriveFont(Font.PLAIN, 10f);
-           StaticData.font13 = font.deriveFont(Font.BOLD, 13f);
-           StaticData.font15 = font.deriveFont(Font.BOLD, 15f);
+            Font font = Font.createFont(Font.TRUETYPE_FONT, s);
+            StaticData.font12 = font.deriveFont(Font.BOLD, 12f);
+            StaticData.font10 = font.deriveFont(Font.PLAIN, 10f);
+            StaticData.font13 = font.deriveFont(Font.BOLD, 13f);
+            StaticData.font15 = font.deriveFont(Font.BOLD, 15f);
             StaticData.font8 = font.deriveFont(Font.PLAIN, 8f);
+            StaticData.fileManager.loadDataFromFile();
+            StaticData.fileManager.getTotalLiked();
         } catch (FontFormatException ex) {
             Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-    setSize(1000, 800);
+        setSize(1000, 800);
         screenDimension = getSize();
-        add(new SideNav(), BorderLayout.LINE_START);
+        System.out.println(FileManager.totalLiked);
+        StaticData.sidenav = new SideNav();
+        add(StaticData.sidenav, BorderLayout.LINE_START);
         dashboard = new Dashboard();
         add(dashboard, BorderLayout.CENTER);
-        
+
         setLocationRelativeTo(null);
         setOnClickListeners();
         setVisible(true);
-        
-        addComponentListener(new ComponentAdapter() 
-        {  
-                public void componentResized(ComponentEvent evt) {
-                    Component c = (Component)evt.getSource();
-                    screenDimension = c.getSize();
-                }
+
+        addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent evt) {
+                Component c = (Component) evt.getSource();
+                screenDimension = c.getSize();
+            }
         });
     }
-
 
     private void setOnClickListeners() {
         TopNav.maximizeButton.addActionListener(new ActionListener() {
@@ -86,7 +90,7 @@ public class MainMenu extends javax.swing.JFrame {
     private void maximizeButtonClick(ActionEvent evt) {
         if (getExtendedState() == NORMAL) {
             setExtendedState(MAXIMIZED_BOTH);
-            
+
         } else {
             setExtendedState(NORMAL);
         }

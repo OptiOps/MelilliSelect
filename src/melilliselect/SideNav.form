@@ -193,7 +193,7 @@
                   <Connection code="StaticData.textWhiteColor" type="code"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/melilliselect/resources/SendIcon.png"/>
+                  <Image iconType="3" name="/melilliselect/resources/ImageIcon.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Foto"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -254,7 +254,7 @@
                   <Connection code="StaticData.textWhiteColor" type="code"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/melilliselect/resources/HeartIcon.png"/>
+                  <Image iconType="3" name="/melilliselect/resources/heartSide.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Selezione"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">

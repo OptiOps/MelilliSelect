@@ -9,12 +9,16 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import melilliselect.Models.ImageFileModel;
 import static melilliselect.workers.ImageLoaderWorker.getBufferedImage;
 
 /**
@@ -28,20 +32,24 @@ public class ImageLabel extends javax.swing.JPanel {
      */
     ImageIcon ic;
     String path;
+    ImageFileModel ifm;
+    ImageIcon heartSelected;
+    ImageIcon heartUnSelected;
+    ImageIcon diamondSelected;
+    ImageIcon diamondUnSelected;
 
-    public ImageLabel(ImageIcon ic, String name,String path) {
+    public ImageLabel(ImageFileModel ifm) {
         initComponents();
-        this.ic = ic;
+        this.ic = ifm.getBufferedImage();
         this.image.setIcon(ic);
-        this.imageName.setText(name);
-        this.path = path;
-
-    }
-
-    public ImageLabel(String name, String path) {
-        initComponents();
-        this.path = path;
-        this.imageName.setText(name);
+        this.imageName.setText(ifm.getName());
+        this.path = ifm.getPath();
+        this.ifm = ifm;
+        heartSelected = new ImageIcon(getClass().getResource("/melilliselect/resources/HeartRed.png"));
+        heartUnSelected = new ImageIcon(getClass().getResource("/melilliselect/resources/HeartIcon.png"));
+        diamondSelected = new ImageIcon(getClass().getResource("/melilliselect/resources/Diamond.png"));
+        diamondUnSelected = new ImageIcon(getClass().getResource("/melilliselect/resources/DiamondIcon.png"));
+        checkHeartDiamond();
 
     }
 
@@ -89,12 +97,22 @@ public class ImageLabel extends javax.swing.JPanel {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         heart.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        heart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/HeartRed.png"))); // NOI18N
+        heart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/HeartIcon.png"))); // NOI18N
+        heart.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                heartMouseClicked(evt);
+            }
+        });
         jPanel1.add(heart, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 0, 40, 20));
 
         diamond.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        diamond.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/Diamond.png"))); // NOI18N
+        diamond.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/DiamondIcon.png"))); // NOI18N
         diamond.setToolTipText("");
+        diamond.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                diamondMouseClicked(evt);
+            }
+        });
         jPanel1.add(diamond, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, 40, -1));
 
         image.setBackground(new java.awt.Color(0, 0, 0));
@@ -152,22 +170,57 @@ public class ImageLabel extends javax.swing.JPanel {
         // TODO add your handling code here:
         DisplayImageModal();
     }//GEN-LAST:event_formMouseClicked
-    private void DisplayImageModal(){
+
+    private void heartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_heartMouseClicked
+        // TODO add your handling code here:
+       
+        ifm.setIsHeart(!ifm.isIsHeart());
+         StaticData.sidenav.updateLikeCount(ifm.isIsHeart());
+        StaticData.fileManager.recordHeart(ifm.getImageLikeModel());
+        checkHeartDiamond();
+    }//GEN-LAST:event_heartMouseClicked
+
+    private void diamondMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diamondMouseClicked
+        ifm.setIsDiamond(!ifm.isIsDiamond());
+        StaticData.sidenav.updateDiamondCount(ifm.isIsDiamond());
+        StaticData.fileManager.recordHeart(ifm.getImageLikeModel());
+        checkHeartDiamond();
+    }//GEN-LAST:event_diamondMouseClicked
+
+    private void checkHeartDiamond() {
+        if (ifm.isIsHeart()) {
+            heart.setIcon(this.heartSelected);
+            diamond.setIcon(this.diamondUnSelected);
+            diamond.setVisible(false);
+        } else if (ifm.isIsDiamond()) {
+            diamond.setIcon(this.diamondSelected);
+            heart.setIcon(this.heartUnSelected);
+            heart.setVisible(false);
+        } else {
+            heart.setIcon(this.heartUnSelected);
+            diamond.setIcon(this.diamondUnSelected);
+            diamond.setVisible(true);
+            heart.setVisible(true);
+
+        }
+    }
+
+    private void DisplayImageModal() {
         JDialog dialog = new JDialog();
-        
+
         File cr2File = new File(this.path);
         BufferedImage image;
         try {
-            
+
             image = getBufferedImage(this.path);
 //            image = ImageIO.read(cr2File);
         } catch (IOException ex) {
             image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         }
-        
-        int newWidth = MainMenu.screenDimension.width - StaticData.sideNavWidth -50;
-        int newHeight = MainMenu.screenDimension.height - 90 -50;
-        
+
+        int newWidth = MainMenu.screenDimension.width - StaticData.sideNavWidth - 50;
+        int newHeight = MainMenu.screenDimension.height - 90 - 50;
+
         //        dialog.setResizable(true);
         Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
         BufferedImage thumbnail = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
@@ -177,7 +230,7 @@ public class ImageLabel extends javax.swing.JPanel {
         JLabel label = new JLabel(new ImageIcon(thumbnail));
         dialog.add(label);
         dialog.pack();
-        dialog.setSize(newWidth,newHeight);
+        dialog.setSize(newWidth, newHeight);
         dialog.setLocationRelativeTo(getParent().getParent().getParent());
 
         dialog.setVisible(true);

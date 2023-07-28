@@ -4,9 +4,18 @@
  */
 package melilliselect;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.text.MessageFormat;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import melilliselect.Models.FileManager;
+import melilliselect.Models.LeftOnlyBorder;
 
 /**
  *
@@ -17,8 +26,81 @@ public class SideNav extends javax.swing.JPanel {
     /**
      * Creates new form SIdeNav
      */
+    private String Selected = "1";
+    private final String sText = "Scelte: {0}/120";
+    private final String dText = "Dettagli: {0}";
+
+    public String getSelected() {
+        return Selected;
+
+    }
+
+    public void setSelected(String Selected) {
+        this.Selected = Selected;
+    }
+
     public SideNav() {
+        updateSeleted();
+        updateCount();
+    }
+
+    public void updateSeleted() {
         initComponents();
+        Border b1 = new LeftOnlyBorder(5, StaticData.fgPinkColor);
+        if (Selected == "1") {
+            jButton1.setForeground(StaticData.fgPinkColor);
+            jPanel4.setBorder(b1);
+            jButton1.setIcon(new ImageIcon(getClass().getResource("/melilliselect/resources/seletecdImage.png"))); // NOI18N
+        } else if (Selected == "2") {
+            jButton2.setForeground(StaticData.fgPinkColor);
+            jPanel5.setBorder(b1);
+            jButton2.setIcon(new ImageIcon(getClass().getResource("/melilliselect/resources/pinkHeart.png"))); // NOI18N
+        } else if (Selected == "3") {
+            jButton3.setForeground(StaticData.fgPinkColor);
+            jPanel6.setBorder(b1);
+            jButton3.setIcon(new ImageIcon(getClass().getResource("/melilliselect/resources/pinkClock.png"))); // NOI18N
+        } else if (Selected == "4") {
+            jButton4.setForeground(StaticData.fgPinkColor);
+            jPanel7.setBorder(b1);
+            jButton4.setIcon(new ImageIcon(getClass().getResource("/melilliselect/resources/pinkSend.png"))); // NOI18N
+        }
+        else if (Selected == "5") {
+            jButton5.setForeground(StaticData.fgPinkColor);
+            jPanel9.setBorder(b1);
+            jButton5.setIcon(new ImageIcon(getClass().getResource("/melilliselect/resources/settingsPink.png"))); // NOI18N
+        }
+    }
+
+    public void updateCount() {
+        jLabel3.setText(MessageFormat.format(sText, FileManager.totalLiked));
+        jLabel4.setText(MessageFormat.format(dText, FileManager.totalDiamond));
+    }
+
+    public void updateLikeCount(boolean liked) {
+        if (liked) {
+            FileManager.totalLiked++;
+        } else {
+            FileManager.totalLiked--;
+        }
+        updateCount();
+    }
+    
+    public void updateDiamondCount(boolean liked) {
+        if (liked) {
+            FileManager.totalDiamond++;
+        } else {
+            FileManager.totalDiamond--;
+        }
+        updateCount();
+    }
+
+    @Override
+    public void repaint() {
+        removeAll();
+        updateSeleted();
+        updateCount();
+        super.repaint(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+
     }
 
     /**
@@ -106,7 +188,7 @@ public class SideNav extends javax.swing.JPanel {
         jButton1.setBackground(StaticData.blueBackground);
         jButton1.setFont(StaticData.font13);
         jButton1.setForeground(StaticData.textWhiteColor);
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/SendIcon.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/ImageIcon.png"))); // NOI18N
         jButton1.setText("Foto");
         jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 30, 1, 1));
         jButton1.setFocusPainted(false);
@@ -140,7 +222,7 @@ public class SideNav extends javax.swing.JPanel {
         jButton2.setBackground(StaticData.blueBackground);
         jButton2.setFont(StaticData.font13);
         jButton2.setForeground(StaticData.textWhiteColor);
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/HeartIcon.png"))); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/melilliselect/resources/heartSide.png"))); // NOI18N
         jButton2.setText("Selezione");
         jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 30, 1, 1));
         jButton2.setFocusPainted(false);
@@ -339,23 +421,37 @@ public class SideNav extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         MainMenu.dashboard.dashboardChange(new FileExplorer());
+        this.Selected = "1";
+        repaint();
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        MainMenu.dashboard.dashboardChange(new LikeFiles());
+        this.Selected = "2";
+        repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        MainMenu.dashboard.dashboardChange(new LikeFiles());
+        this.Selected = "3";
+        repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         MainMenu.dashboard.dashboardChange(new Upload());
+        this.Selected = "4";
+        repaint();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        MainMenu.dashboard.dashboardChange(new Settings());
+        this.Selected = "5";
+        repaint();
     }//GEN-LAST:event_jButton5ActionPerformed
 
 

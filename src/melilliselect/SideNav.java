@@ -11,6 +11,7 @@ import java.awt.Insets;
 import java.text.MessageFormat;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -63,8 +64,7 @@ public class SideNav extends javax.swing.JPanel {
             jButton4.setForeground(StaticData.fgPinkColor);
             jPanel7.setBorder(b1);
             jButton4.setIcon(new ImageIcon(getClass().getResource("/melilliselect/resources/pinkSend.png"))); // NOI18N
-        }
-        else if (Selected == "5") {
+        } else if (Selected == "5") {
             jButton5.setForeground(StaticData.fgPinkColor);
             jPanel9.setBorder(b1);
             jButton5.setIcon(new ImageIcon(getClass().getResource("/melilliselect/resources/settingsPink.png"))); // NOI18N
@@ -84,7 +84,7 @@ public class SideNav extends javax.swing.JPanel {
         }
         updateCount();
     }
-    
+
     public void updateDiamondCount(boolean liked) {
         if (liked) {
             FileManager.totalDiamond++;
@@ -101,6 +101,22 @@ public class SideNav extends javax.swing.JPanel {
         updateCount();
         super.repaint(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
 
+    }
+
+    
+    public void updateDashboardForce(String num, JPanel jp) {
+        MainMenu.dashboard.dashboardChange(jp);
+        this.Selected = num;
+        repaint();
+    }
+    
+    public void updateDashboard(String num, JPanel jp) {
+        if(StaticData.fileManager.getSettingsModel()!=null){
+        MainMenu.dashboard.dashboardChange(jp);
+        this.Selected = num;
+        repaint();
+        
+        }
     }
 
     /**
@@ -420,38 +436,27 @@ public class SideNav extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        MainMenu.dashboard.dashboardChange(new FileExplorer());
-        this.Selected = "1";
-        repaint();
-
+        updateDashboard("1", new FileExplorer());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        MainMenu.dashboard.dashboardChange(new LikeFiles());
-        this.Selected = "2";
-        repaint();
+        updateDashboard("2", new LikeFiles());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        MainMenu.dashboard.dashboardChange(new LikeFiles());
-        this.Selected = "3";
-        repaint();
+        updateDashboard("3", new LikeFiles());
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        MainMenu.dashboard.dashboardChange(new Upload());
-        this.Selected = "4";
-        repaint();
+        updateDashboard("4", new Upload());
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        MainMenu.dashboard.dashboardChange(new Settings());
-        this.Selected = "5";
-        repaint();
+        updateDashboard("5", new Settings());
     }//GEN-LAST:event_jButton5ActionPerformed
 
 

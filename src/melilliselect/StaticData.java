@@ -31,6 +31,7 @@ public class StaticData {
     public static Color pbBGColor = new Color(27, 41, 63);
     public static Color pbFGColor = new Color(204, 153, 153);
     public static Color fgPinkColor = new Color(204, 153, 153);
+    public static Color redColor = new Color(193, 71, 71);
     public static Font customFont;
     public static Font font12;
     public static Font font10;
@@ -44,5 +45,6 @@ public class StaticData {
     public static String currentWorkingDirectory = System.getProperty("user.dir") + zipFolderName;
     public static String destinationFolderPath = currentWorkingDirectory + "/melilliselected";
     public static SideNav sidenav;
+    public static String email="arsam.farooq1@gmail.com";
 
 }

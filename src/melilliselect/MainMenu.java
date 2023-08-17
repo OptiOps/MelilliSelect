@@ -60,7 +60,9 @@ public class MainMenu extends javax.swing.JFrame {
         StaticData.sidenav = new SideNav();
         add(StaticData.sidenav, BorderLayout.LINE_START);
         dashboard = new Dashboard();
+         StaticData.fileManager.loadSettingsFromFile();
         add(dashboard, BorderLayout.CENTER);
+       
 
         setLocationRelativeTo(null);
         setOnClickListeners();
@@ -72,6 +74,8 @@ public class MainMenu extends javax.swing.JFrame {
                 screenDimension = c.getSize();
             }
         });
+        
+//         dashboard.setVisible(true);
     }
 
     private void setOnClickListeners() {

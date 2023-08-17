@@ -16,6 +16,15 @@ public class ImageLikeModel implements Serializable{
     private String path;
     private boolean isHeart;
     private boolean isDiamond;
+    private boolean isUploaded;
+
+    public boolean isIsUploaded() {
+        return isUploaded;
+    }
+
+    public void setIsUploaded(boolean isUploaded) {
+        this.isUploaded = isUploaded;
+    }
     private LocalDateTime updateDateTime;
     public ImageLikeModel(String name, String path) {
         this.name = name;

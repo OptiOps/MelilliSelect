@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import melilliselect.MainMenu;
+import melilliselect.Settings;
 
 import melilliselect.StaticData;
 import net.lingala.zip4j.ZipFile;
@@ -34,13 +36,19 @@ import net.lingala.zip4j.model.enums.EncryptionMethod;
 public class FileManager {
 
     private Map<String, ImageLikeModel> fileLikeDislikeMap;
+    public SettingsModel settingsModel;
     private String dataFilePath = "melliliselectdata.dat";
+    private String settingsFilePath = "mellilisettings.dat";
     public static int totalLiked = 0;
     public static int totalDiamond = 0;
+    public static int totalUpload = 0;
 
     public FileManager() {
         fileLikeDislikeMap = new HashMap<>();
 
+    }
+    public SettingsModel getSettingsModel(){
+        return this.settingsModel;
     }
 
     public void recordHeart(ImageLikeModel ifm) {
@@ -62,6 +70,10 @@ public class FileManager {
         saveDataToFile();
     }
 
+    public Map<String, ImageLikeModel> getFileLikeDislikeMap() {
+        return fileLikeDislikeMap;
+    }
+
     public String getCoppiedPath(String path) {
         String finalCopyPath = path.replace(StaticData.currentWorkingDirectory, "");
         int lastSlashIndex = finalCopyPath.lastIndexOf('/');
@@ -80,6 +92,9 @@ public class FileManager {
             } else if (ilm.isIsHeart()) {
                 totalLiked++;
             }
+            if (ilm.isIsUploaded()) {
+                totalUpload++;
+            }
         }
     }
 
@@ -95,7 +110,20 @@ public class FileManager {
             objectOutputStream.writeObject(fileLikeDislikeMap);
             objectOutputStream.close();
             fileOutputStream.close();
-            System.out.println("Data saved to file: " + this.dataFilePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void saveSettingsToFile() {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(this.settingsFilePath);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(settingsModel);
+            objectOutputStream.close();
+            fileOutputStream.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -112,6 +140,25 @@ public class FileManager {
             System.out.println("Data loaded from file: " + this.dataFilePath);
         } catch (IOException | ClassNotFoundException e) {
 //            e.printStackTrace();
+        }
+    }
+
+    public void loadSettingsFromFile() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(this.settingsFilePath);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            settingsModel = (SettingsModel) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+            if (settingsModel!= null && settingsModel.getEmail()!="") {
+            }
+            else{
+                StaticData.sidenav.updateDashboardForce("5", new Settings());
+            }
+        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+        StaticData.sidenav.updateDashboardForce("5", new Settings());
+        
         }
     }
 

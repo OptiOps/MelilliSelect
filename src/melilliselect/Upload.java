@@ -4,6 +4,27 @@
  */
 package melilliselect;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import melilliselect.Models.ImageLikeModel;
+import melilliselect.workers.FileUpload;
+
 /**
  *
  * @author arsam
@@ -15,6 +36,18 @@ public class Upload extends javax.swing.JPanel {
      */
     public Upload() {
         initComponents();
+        percentage.setText("0");
+        progressBar.setValue(0);
+    }
+
+    public void updateProgress() {
+        int part = StaticData.fileManager.totalUpload;
+        int whole = StaticData.fileManager.totalLiked + StaticData.fileManager.totalDiamond;
+        double percentage = ((double) part / whole) * 100;
+        System.err.println("per" + percentage);
+        this.percentage.setText((int) percentage + "");
+        progressBar.setValue((int) percentage);
+        repaint();
     }
 
     /**
@@ -27,8 +60,8 @@ public class Upload extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        percentage = new javax.swing.JLabel();
+        progressBar = new javax.swing.JProgressBar();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -41,15 +74,15 @@ public class Upload extends javax.swing.JPanel {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Hai terminato la selezione? Invia subito le tue foto.");
 
-        jLabel2.setFont(StaticData.font12);
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("10%");
+        percentage.setFont(StaticData.font12);
+        percentage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        percentage.setText("10%");
 
-        jProgressBar1.setBackground(StaticData.pbBGColor);
-        jProgressBar1.setForeground(StaticData.pbFGColor);
-        jProgressBar1.setValue(10);
-        jProgressBar1.setBorder(null);
-        jProgressBar1.setPreferredSize(new java.awt.Dimension(360, 20));
+        progressBar.setBackground(StaticData.pbBGColor);
+        progressBar.setForeground(StaticData.pbFGColor);
+        progressBar.setValue(10);
+        progressBar.setBorder(null);
+        progressBar.setPreferredSize(new java.awt.Dimension(360, 20));
 
         jPanel1.setBackground(StaticData.dashboardBackground);
 
@@ -98,12 +131,12 @@ public class Upload extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(percentage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(87, Short.MAX_VALUE)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(64, Short.MAX_VALUE))
             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -114,9 +147,9 @@ public class Upload extends javax.swing.JPanel {
                 .addContainerGap(50, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2)
+                .addComponent(percentage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -131,17 +164,115 @@ public class Upload extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        jButton1.setEnabled(false);
+       
+        simulateLongTask();
+
+//        jButton1.setEnabled(true);
+
     }//GEN-LAST:event_jButton1ActionPerformed
+    private void createJOption(String error) {
+        JDialog dialog = new JDialog();
+        dialog.setUndecorated(true);
+//        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(500, 300);
+        dialog.setLayout(new BorderLayout());
+        dialog.setLocationRelativeTo(getParent());
+        JPanel titleBarPanel = new JPanel(new BorderLayout());
+        titleBarPanel.setBorder(new EmptyBorder(50, 5, 5, 5));
+
+        ImageIcon icon = new ImageIcon(getClass().getResource("/melilliselect/resources/danger.png")); // Replace with your icon file
+        JLabel iconLabel = new JLabel(icon);
+        titleBarPanel.add(iconLabel, BorderLayout.CENTER);
+
+        dialog.add(titleBarPanel, BorderLayout.NORTH);
+
+        // Content panel with description
+        JPanel contentPanel = new JPanel();
+        contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        contentPanel.setLayout(new BorderLayout());
+
+        JLabel boldLabel = new JLabel("<html><b>C’è stato un errore durante il trasferimento.</b> </html>");
+        contentPanel.add(boldLabel, BorderLayout.NORTH);
+        boldLabel.setHorizontalAlignment(SwingConstants.CENTER);
+  boldLabel.setBorder(new EmptyBorder(0, 5, 20, 5));
+        JTextArea descriptionArea = new JTextArea(
+                error
+        );
+        descriptionArea.setEditable(false);
+        descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setBackground(getParent().getBackground());
+        contentPanel.add(descriptionArea, BorderLayout.CENTER);
+
+        JButton closeButton = new JButton("OK");
+        closeButton.setBackground(StaticData.pbFGColor);
+        closeButton.setFont(StaticData.font12);
+        closeButton.setForeground(new java.awt.Color(255, 255, 255));
+        closeButton.setText("Invia la selezione");
+        closeButton.setBorder(null);
+        closeButton.setPreferredSize(new java.awt.Dimension(127, 37));
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(closeButton);
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.add(contentPanel);
+        dialog.setVisible(true);
+    }
+
+    private void simulateLongTask() {
+        Thread taskThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FileUpload fp = new FileUpload();
+                try {
+                    fp.connectFile();
+
+                    Collection<ImageLikeModel> values = StaticData.fileManager.getFileLikeDislikeMap().values();
+                    for (ImageLikeModel ilm : values) {
+                        if (!ilm.isIsUploaded()) {
+                            fp.uploadFile(ilm.getPath(), StaticData.email);
+                            StaticData.fileManager.totalUpload++;
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateProgress();
+                                }
+                            });
+                            StaticData.fileManager.saveDataToFile();
+                        }
+                    }
+                } catch (IOException ex) {
+                    createJOption(ex.toString());
+                }
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        jButton1.setEnabled(true); // Re-enable the button
+                    }
+                });
+            }
+        });
+        taskThread.start();
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JLabel percentage;
+    private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 }
